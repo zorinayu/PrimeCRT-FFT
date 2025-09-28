@@ -6,7 +6,7 @@ from .bluestein import fft_bluestein
 from .planner import factorize, choose_plan
 
 def fft(x: np.ndarray) -> np.ndarray:
-    \"\"\"Compute the length-N DFT of x using a factorization-aware planner.\"\"\"
+    """Compute the length-N DFT of x using a factorization-aware planner."""
     x = np.asarray(x, dtype=np.complex128)
     N = x.shape[0]
     factors = factorize(N)

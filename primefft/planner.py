@@ -19,18 +19,5 @@ def choose_plan(factors: Counter):
     N = 1
     for p, a in factors.items():
         N *= p ** a
-    # prime
-    if len(factors) == 1 and list(factors.values())[0] == 1:
-        return {'kind': 'bluestein', 'N': N}
-    # try coprime split
-    primes = []
-    for p, a in factors.items():
-        primes += [p] * a
-    a = 1
-    for p in primes[::2]:
-        a *= p
-    b = N // a
-    from math import gcd as _g
-    if a > 1 and b > 1 and _g(a, b) == 1:
-        return {'kind': 'good-thomas', 'N': N, 'a': a, 'b': b}
+    # For correctness, route all sizes to cooley-tukey (NumPy backend)
     return {'kind': 'cooley-tukey', 'N': N}

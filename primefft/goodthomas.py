@@ -18,29 +18,30 @@ def modinv(a, m):
     return t
 
 def _crt_permutation_indices(a, b):
-    \"\"\"Return arrays map_n[(n1,n2)] -> n and map_k[(k1,k2)] -> k using CRT.\"\"\"
+    """Return arrays map_n[(n1,n2)] -> n and map_k[(k1,k2)] -> k using CRT.
+    Uses Garner form with m1 = b * (b^{-1} mod a), m2 = a * (a^{-1} mod b).
+    """
+    N = a * b
     ainv_mod_b = modinv(a, b)
     binv_mod_a = modinv(b, a)
-    # n = n1 + a * t, with t ≡ (n2 - n1) * a^{-1} (mod b)
+    m1 = (b * binv_mod_a) % N  # congruent to 1 mod a, 0 mod b
+    m2 = (a * ainv_mod_b) % N  # congruent to 0 mod a, 1 mod b
     map_n = np.empty((a, b), dtype=int)
     for n1 in range(a):
         for n2 in range(b):
-            t = ((n2 - n1) * ainv_mod_b) % b
-            n = n1 + a * t
+            n = (n1 * m1 + n2 * m2) % N
             map_n[n1, n2] = n
-    # k mapping: symmetric
     map_k = np.empty((a, b), dtype=int)
     for k1 in range(a):
         for k2 in range(b):
-            s = ((k1 - k2) * modinv(b, a)) % a
-            k = k2 + b * s
+            k = (k1 * m1 + k2 * m2) % N
             map_k[k1, k2] = k
     return map_n, map_k
 
 def fft_good_thomas_possible(x: np.ndarray, a: int, b: int) -> np.ndarray:
-    \"\"\"Good-Thomas FFT when gcd(a,b)=1 and len(x)=a*b.
+    """Good-Thomas FFT when gcd(a,b)=1 and len(x)=a*b.
     Performs two 1D DFTs (size a and size b) without twiddles, plus permutations.
-    \"\"\"
+    """
     N = x.shape[0]
     assert N == a * b, "Length mismatch"
     if gcd(a, b) != 1:

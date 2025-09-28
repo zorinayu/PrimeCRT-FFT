@@ -7,4 +7,4 @@ def test_correctness_small():
         x = np.random.randn(N) + 1j*np.random.randn(N)
         X_np = np.fft.fft(x)
         X_pf = fft(x)
-        assert np.allclose(X_np, X_pf, atol=1e-8, rtol=1e-7), f\"Mismatch at N={N}\"
+        assert np.allclose(X_np, X_pf, atol=1e-8, rtol=1e-7), f"Mismatch at N={N}"
