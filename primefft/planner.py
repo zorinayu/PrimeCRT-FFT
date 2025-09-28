@@ -19,5 +19,7 @@ def choose_plan(factors: Counter):
     N = 1
     for p, a in factors.items():
         N *= p ** a
-    # For correctness, route all sizes to cooley-tukey (NumPy backend)
+    # prime length → bluestein; otherwise use cooley-tukey
+    if len(factors) == 1 and list(factors.values())[0] == 1:
+        return {'kind': 'bluestein', 'N': N}
     return {'kind': 'cooley-tukey', 'N': N}
